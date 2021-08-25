@@ -12,10 +12,11 @@ use std::{
 };
 use tokio::{
     io::{reader_stream, AsyncWriteExt},
-    net::UnixStream,
     stream::StreamExt,
     sync::{mpsc, oneshot},
 };
+#[cfg(unix)]
+use tokio::net::UnixStream;
 
 /// Unix Domain Sockets (IPC) transport.
 #[derive(Debug, Clone)]
