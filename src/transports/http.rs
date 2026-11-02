@@ -44,7 +44,7 @@ impl Http {
         let mut builder = Client::builder();
         #[cfg(not(feature = "wasm"))]
         {
-            builder = builder.user_agent(headers::HeaderValue::from_static("web3.rs"));
+            builder = builder.user_agent(reqwest::header::HeaderValue::from_static("web3.rs"));
         }
         let client = builder
             .build()
@@ -218,10 +218,11 @@ mod tests {
         use hyper::service::{make_service_fn, service_fn};
 
         // given
-        let addr = "127.0.0.1:3001";
+        let addr = "127.0.0.1:0";
         // start server
         let service = make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(server)) });
         let server = hyper::Server::bind(&addr.parse().unwrap()).serve(service);
+        let addr = server.local_addr();
         tokio::spawn(async move {
             println!("Listening on http://{}", addr);
             server.await.unwrap();
@@ -254,10 +255,11 @@ mod tests {
         }
 
         // given
-        let addr = "127.0.0.1:3001";
+        let addr = "127.0.0.1:0";
         // start server
         let service = make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(handler)) });
         let server = hyper::Server::bind(&addr.parse().unwrap()).serve(service);
+        let addr = server.local_addr();
         tokio::spawn(async move {
             println!("Listening on http://{}", addr);
             server.await.unwrap();
